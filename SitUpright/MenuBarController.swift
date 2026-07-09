@@ -29,7 +29,7 @@ final class MenuBarController {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
         if let button = statusItem.button {
-            button.image = templateImage()
+            button.image = symbolImage(color: nil, weight: .regular)
             button.imagePosition = .imageOnly
             button.target = self
             button.action = #selector(togglePopover(_:))
@@ -64,28 +64,37 @@ final class MenuBarController {
     // MARK: - Icon
 
     private static let symbolName = "figure.seated.side"
+    private static let iconPointSize: CGFloat = 15
+
+    // Punchy, high-saturation warning colors so the icon really stands out.
+    private static let vividYellow = NSColor(srgbRed: 1.00, green: 0.80, blue: 0.00, alpha: 1)
+    private static let vividRed    = NSColor(srgbRed: 1.00, green: 0.13, blue: 0.13, alpha: 1)
 
     private func baseSymbol() -> NSImage? {
         NSImage(systemSymbolName: Self.symbolName, accessibilityDescription: "Posture")
             ?? NSImage(systemSymbolName: "person.fill", accessibilityDescription: "Posture")
     }
 
-    /// Template image adapts to the menu bar (white on dark, black on light) — used for
-    /// "good" posture so it looks like a normal, always-visible icon.
-    private func templateImage() -> NSImage? {
-        let img = baseSymbol()
-        img?.isTemplate = true
-        return img
-    }
-
-    /// Bakes the color into the SF Symbol via a palette configuration. This is the only
-    /// reliable way to tint a menu bar icon — `contentTintColor` is ignored for status
-    /// item buttons using template images.
-    private func coloredImage(_ color: NSColor) -> NSImage? {
-        let config = NSImage.SymbolConfiguration(paletteColors: [color])
-        let img = baseSymbol()?.withSymbolConfiguration(config)
-        img?.isTemplate = false
-        return img
+    /// Builds the menu bar image.
+    /// - `color == nil` → template image that adapts to the bar (white on dark) for the
+    ///   subtle "good" state.
+    /// - `color != nil` → color baked into the SF Symbol via a palette configuration
+    ///   (the only reliable way to tint a status item icon). A heavier `weight` thickens
+    ///   the strokes so warning states grab attention.
+    private func symbolImage(color: NSColor?, weight: NSFont.Weight) -> NSImage? {
+        let base = baseSymbol()
+        if let color {
+            let cfg = NSImage.SymbolConfiguration(pointSize: Self.iconPointSize, weight: weight)
+                .applying(NSImage.SymbolConfiguration(paletteColors: [color]))
+            let img = base?.withSymbolConfiguration(cfg)
+            img?.isTemplate = false
+            return img
+        } else {
+            let cfg = NSImage.SymbolConfiguration(pointSize: Self.iconPointSize, weight: weight)
+            let img = base?.withSymbolConfiguration(cfg)
+            img?.isTemplate = true
+            return img
+        }
     }
 
     /// Maps the current app state to the menu bar color:
@@ -98,13 +107,13 @@ final class MenuBarController {
 
         if !trackingLive || !detector.isCalibrated {
             // Gray whenever tracking is off, headphones are gone, or not yet calibrated.
-            button.image = coloredImage(.systemGray)
+            button.image = symbolImage(color: .systemGray, weight: .regular)
         } else {
             switch detector.state {
-            case .good:        button.image = templateImage()               // adaptive white
-            case .borderline:  button.image = coloredImage(.systemYellow)
-            case .poor:        button.image = coloredImage(.systemRed); shouldPulse = true
-            case .unavailable: button.image = coloredImage(.systemGray)
+            case .good:        button.image = symbolImage(color: nil, weight: .regular)              // subtle adaptive white
+            case .borderline:  button.image = symbolImage(color: Self.vividYellow, weight: .bold)    // bold gold
+            case .poor:        button.image = symbolImage(color: Self.vividRed, weight: .heavy); shouldPulse = true
+            case .unavailable: button.image = symbolImage(color: .systemGray, weight: .regular)
             }
         }
 
@@ -123,10 +132,10 @@ final class MenuBarController {
         pulsePhase = 0
         let timer = Timer(timeInterval: 1.0 / 30.0, repeats: true) { [weak self] _ in
             guard let self, let button = self.statusItem.button else { return }
-            // ~1.1s per pulse cycle.
-            self.pulsePhase += (2 * .pi) / (30.0 * 1.1)
+            // ~0.9s per pulse cycle — a bit faster and deeper so it reads as an alert.
+            self.pulsePhase += (2 * .pi) / (30.0 * 0.9)
             let eased = (sin(self.pulsePhase) + 1) / 2      // 0...1
-            button.alphaValue = 0.35 + 0.65 * eased          // 0.35...1.0
+            button.alphaValue = 0.15 + 0.85 * eased          // 0.15...1.0
         }
         RunLoop.main.add(timer, forMode: .common)   // keep pulsing while menus are open
         pulseTimer = timer
