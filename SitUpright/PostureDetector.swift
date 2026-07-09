@@ -130,11 +130,11 @@ final class PostureDetector: ObservableObject {
                 if settings.notificationsEnabled {
                     notifications.sendPostureAlert(deviationDegrees: deviationDegrees)
                 }
-                playPingIfEnabled(now: now)
-            } else if settings.soundEnabled,
+                playAlertAudio(now: now)
+            } else if (settings.soundEnabled || settings.bassEnabled),
                       now - lastSoundTime >= settings.soundRepeatInterval {
-                // Still slouching → repeat the ping every `soundRepeatInterval` seconds.
-                playPingIfEnabled(now: now)
+                // Still slouching → repeat the alert audio every `soundRepeatInterval` seconds.
+                playAlertAudio(now: now)
             }
         } else {
             // Sat back up → reset so the next slouch alerts (and pings) again.
@@ -143,9 +143,13 @@ final class PostureDetector: ObservableObject {
         }
     }
 
-    private func playPingIfEnabled(now: TimeInterval) {
-        guard settings.soundEnabled else { return }
-        sound.play(named: settings.soundName)
+    private func playAlertAudio(now: TimeInterval) {
+        if settings.soundEnabled {
+            sound.play(named: settings.soundName)
+        }
+        if settings.bassEnabled {
+            sound.playLowPulse(frequency: settings.bassFrequency)
+        }
         lastSoundTime = now
     }
 }

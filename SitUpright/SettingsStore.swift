@@ -17,6 +17,8 @@ final class SettingsStore: ObservableObject {
         static let soundOn            = "soundEnabled"
         static let soundName          = "soundName"
         static let soundRepeat        = "soundRepeatInterval"
+        static let bassOn             = "bassEnabled"
+        static let bassFrequency      = "bassFrequency"
         static let launchAtLogin      = "launchAtLogin"
         static let hasCalibration     = "hasCalibration"
         static let baselineW          = "baselineW"
@@ -68,6 +70,17 @@ final class SettingsStore: ObservableObject {
         didSet { defaults.set(soundRepeatInterval, forKey: Key.soundRepeat) }
     }
 
+    /// Plays a low-frequency bass pulse alongside the alert. Note: AirPods have no haptics,
+    /// so this can't physically vibrate them; it's a real low tone, faint on small drivers.
+    @Published var bassEnabled: Bool {
+        didSet { defaults.set(bassEnabled, forKey: Key.bassOn) }
+    }
+
+    /// Frequency of the bass pulse in Hz.
+    @Published var bassFrequency: Double {
+        didSet { defaults.set(bassFrequency, forKey: Key.bassFrequency) }
+    }
+
     @Published var launchAtLogin: Bool {
         didSet {
             defaults.set(launchAtLogin, forKey: Key.launchAtLogin)
@@ -100,6 +113,8 @@ final class SettingsStore: ObservableObject {
             Key.soundOn: true,
             Key.soundName: "Tink",
             Key.soundRepeat: 15.0,
+            Key.bassOn: true,
+            Key.bassFrequency: 36.0,
             Key.launchAtLogin: false,
             Key.hasCalibration: false
         ])
@@ -112,6 +127,8 @@ final class SettingsStore: ObservableObject {
         soundEnabled         = defaults.bool(forKey: Key.soundOn)
         soundName            = defaults.string(forKey: Key.soundName) ?? "Tink"
         soundRepeatInterval  = defaults.double(forKey: Key.soundRepeat)
+        bassEnabled          = defaults.bool(forKey: Key.bassOn)
+        bassFrequency        = defaults.double(forKey: Key.bassFrequency)
         launchAtLogin        = defaults.bool(forKey: Key.launchAtLogin)
         hasCalibration       = defaults.bool(forKey: Key.hasCalibration)
 

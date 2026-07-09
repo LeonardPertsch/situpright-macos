@@ -213,7 +213,30 @@ struct PosturePopoverView: View {
                     .labelsHidden()
             }
             .font(.subheadline)
-            .disabled(!settings.soundEnabled)
+            .disabled(!(settings.soundEnabled || settings.bassEnabled))
+
+            Toggle("Bass pulse", isOn: $settings.bassEnabled)
+                .font(.subheadline)
+                .onChange(of: settings.bassEnabled) { _, on in
+                    if on { sound.playLowPulse(frequency: settings.bassFrequency) }
+                }
+
+            HStack {
+                Text("Frequency")
+                Spacer()
+                Text("\(Int(settings.bassFrequency)) Hz").foregroundStyle(.secondary)
+                Stepper("", value: $settings.bassFrequency, in: 25...120, step: 1)
+                    .labelsHidden()
+            }
+            .font(.subheadline)
+            .disabled(!settings.bassEnabled)
+            .onChange(of: settings.bassFrequency) { _, hz in
+                if settings.bassEnabled { sound.playLowPulse(frequency: hz) }
+            }
+
+            Text("AirPods can't truly vibrate; a deep tone is faint on small drivers.")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
 
             Toggle("Launch at login", isOn: $settings.launchAtLogin)
                 .font(.subheadline)
