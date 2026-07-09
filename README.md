@@ -1,10 +1,30 @@
+<div align="center">
+
+<img src="docs/icon.png" width="128" alt="SitUpright icon">
+
 # SitUpright
 
 A native macOS menu bar app that uses AirPods / headphone motion (`CMHeadphoneMotionManager`)
 to detect forward head posture and remind you to sit upright. Everything runs locally —
 no camera, no cloud, no analytics, no external server.
 
-Target: **macOS 14 Sonoma or newer.**
+**macOS 14 Sonoma or newer**
+
+### [⬇︎ Download SitUpright 1.0.0 (.dmg)](https://github.com/LeonardPertsch/situpright-macos/releases/latest/download/SitUpright-1.0.0.dmg)
+
+</div>
+
+> **First launch:** the app is ad-hoc signed (not notarized), so macOS Gatekeeper blocks it on
+> download. Right-click the app → **Open** → **Open**, or run
+> `xattr -dr com.apple.quarantine /Applications/SitUpright.app`. Notarized distribution would
+> require a paid Apple Developer ID.
+
+## The menu bar icon
+
+The icon lives in the menu bar at all times and changes color to reflect your posture — white
+when upright, yellow when you start leaning forward, and red (gently pulsing) when you slouch.
+
+![Menu bar posture states](docs/menubar-states.png)
 
 ---
 
@@ -29,9 +49,9 @@ If you prefer to regenerate the project from scratch, see `project.yml` (XcodeGe
 3. Sit up straight and press **Calibrate Upright Posture** to store your neutral baseline.
 4. The menu bar icon now live-updates:
    - **gray** — tracking off / headphones disconnected / not calibrated / access denied
-   - **green** — good posture
+   - **white** — good posture
    - **yellow** — borderline (past the warning angle)
-   - **red** — slouching (past the bad-posture angle)
+   - **red, pulsing** — slouching (past the bad-posture angle)
 5. If poor posture persists past the alert delay, you get a local notification.
 
 ---
