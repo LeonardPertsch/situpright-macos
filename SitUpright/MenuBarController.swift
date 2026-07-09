@@ -42,8 +42,7 @@ final class MenuBarController {
         }
 
         popover.behavior = .transient
-        popover.contentSize = NSSize(width: 300, height: 600)
-        popover.contentViewController = NSHostingController(
+        let hosting = NSHostingController(
             rootView: PosturePopoverView(
                 settings: settings,
                 service: service,
@@ -52,6 +51,9 @@ final class MenuBarController {
                 stats: stats
             )
         )
+        // Let the popover grow/shrink as the collapsible settings sections open and close.
+        hosting.sizingOptions = [.preferredContentSize]
+        popover.contentViewController = hosting
 
         // Live icon updates: any change to tracking status, connection, calibration,
         // or posture state re-tints the menu bar icon.

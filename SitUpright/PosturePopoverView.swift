@@ -12,6 +12,10 @@ struct PosturePopoverView: View {
     @ObservedObject var stats: StatsStore
     let sound: SoundService
 
+    @State private var showDetection = false
+    @State private var showAlerts = false
+    @State private var showGeneral = false
+
     init(settings: SettingsStore,
          service: HeadphoneMotionService,
          detector: PostureDetector,
@@ -25,23 +29,22 @@ struct PosturePopoverView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 14) {
-                header
-                statusBlock
-                Divider()
-                controls
-                Divider()
-                statistics
-                Divider()
-                preferences
-                Divider()
-                footer
-            }
-            .padding(16)
-            .frame(width: 300)
+        // Autosizes: compact when the settings sections are collapsed, grows when opened.
+        VStack(alignment: .leading, spacing: 14) {
+            header
+            statusBlock
+            Divider()
+            controls
+            Divider()
+            statistics
+            Divider()
+            settingsSection
+            Divider()
+            footer
         }
-        .frame(width: 300, height: 600)
+        .padding(16)
+        .frame(width: 300)
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     // MARK: - Statistics
@@ -166,81 +169,93 @@ struct PosturePopoverView: View {
 
     // MARK: - Preferences
 
-    private var preferences: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
-                HStack {
-                    Text("Sensitivity")
-                    Spacer()
-                    Text(sensitivityLabel).foregroundStyle(.secondary)
+    // Settings are tucked into collapsible sections (all collapsed by default) so the
+    // popover stays uncluttered; values are chosen from dropdown menus.
+    private var settingsSection: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            DisclosureGroup("Detection", isExpanded: $showDetection) {
+                VStack(spacing: 10) {
+                    menuPicker("Sensitivity", selection: sensitivityBinding,
+                               options: [("Low", 0.25), ("Medium", 0.5), ("High", 0.75)])
+                    menuPicker("Alert delay", selection: $settings.alertDelay,
+                               options: [("5 s", 5), ("8 s", 8), ("10 s", 10),
+                                         ("15 s", 15), ("20 s", 20), ("30 s", 30)])
                 }
-                .font(.subheadline)
-                Slider(value: $settings.sensitivity, in: 0...1)
+                .padding(.top, 6)
             }
 
-            HStack {
-                Text("Alert delay")
-                Spacer()
-                Text("\(Int(settings.alertDelay)) s").foregroundStyle(.secondary)
-                Stepper("", value: $settings.alertDelay, in: 3...30, step: 1)
-                    .labelsHidden()
-            }
-            .font(.subheadline)
+            DisclosureGroup("Alerts", isExpanded: $showAlerts) {
+                VStack(spacing: 10) {
+                    Toggle("Notifications", isOn: $settings.notificationsEnabled)
 
-            Toggle("Notifications", isOn: $settings.notificationsEnabled)
-                .font(.subheadline)
+                    Toggle("Sound", isOn: $settings.soundEnabled)
 
-            Toggle("Sound", isOn: $settings.soundEnabled)
-                .font(.subheadline)
+                    Picker("Tone", selection: $settings.soundName) {
+                        ForEach(SoundService.available, id: \.self) { Text($0).tag($0) }
+                    }
+                    .pickerStyle(.menu)
+                    .disabled(!settings.soundEnabled)
 
-            // Sound chooser — previews the sound when you switch.
-            Picker("Tone", selection: $settings.soundName) {
-                ForEach(SoundService.available, id: \.self) { Text($0).tag($0) }
-            }
-            .pickerStyle(.menu)
-            .font(.subheadline)
-            .disabled(!settings.soundEnabled)
-            .onChange(of: settings.soundName) { _, newValue in
-                sound.play(named: newValue)
-            }
+                    menuPicker("Repeat", selection: $settings.soundRepeatInterval,
+                               options: [("10 s", 10), ("15 s", 15), ("30 s", 30), ("60 s", 60)])
+                        .disabled(!(settings.soundEnabled || settings.bassEnabled))
 
-            // How often the ping repeats while you stay in the red zone.
-            HStack {
-                Text("Repeat every")
-                Spacer()
-                Text("\(Int(settings.soundRepeatInterval)) s").foregroundStyle(.secondary)
-                Stepper("", value: $settings.soundRepeatInterval, in: 5...120, step: 5)
-                    .labelsHidden()
-            }
-            .font(.subheadline)
-            .disabled(!(settings.soundEnabled || settings.bassEnabled))
+                    Toggle("Bass pulse", isOn: $settings.bassEnabled)
 
-            Toggle("Bass pulse", isOn: $settings.bassEnabled)
-                .font(.subheadline)
+                    menuPicker("Frequency", selection: $settings.bassFrequency,
+                               options: [("30 Hz", 30), ("36 Hz", 36), ("45 Hz", 45),
+                                         ("55 Hz", 55), ("70 Hz", 70), ("85 Hz", 85)])
+                        .disabled(!settings.bassEnabled)
+
+                    Text("AirPods can't truly vibrate; a deep tone is faint on small drivers.")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .padding(.top, 6)
+                // Preview audio when the user changes a sound setting.
+                .onChange(of: settings.soundName) { _, name in
+                    if settings.soundEnabled { sound.play(named: name) }
+                }
                 .onChange(of: settings.bassEnabled) { _, on in
                     if on { sound.playLowPulse(frequency: settings.bassFrequency) }
                 }
-
-            HStack {
-                Text("Frequency")
-                Spacer()
-                Text("\(Int(settings.bassFrequency)) Hz").foregroundStyle(.secondary)
-                Stepper("", value: $settings.bassFrequency, in: 25...120, step: 1)
-                    .labelsHidden()
-            }
-            .font(.subheadline)
-            .disabled(!settings.bassEnabled)
-            .onChange(of: settings.bassFrequency) { _, hz in
-                if settings.bassEnabled { sound.playLowPulse(frequency: hz) }
+                .onChange(of: settings.bassFrequency) { _, hz in
+                    if settings.bassEnabled { sound.playLowPulse(frequency: hz) }
+                }
             }
 
-            Text("AirPods can't truly vibrate; a deep tone is faint on small drivers.")
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-
-            Toggle("Launch at login", isOn: $settings.launchAtLogin)
-                .font(.subheadline)
+            DisclosureGroup("General", isExpanded: $showGeneral) {
+                VStack(spacing: 10) {
+                    Toggle("Launch at login", isOn: $settings.launchAtLogin)
+                }
+                .padding(.top, 6)
+            }
         }
+        .font(.subheadline)
+    }
+
+    /// A compact label + dropdown menu bound to a `Double` setting.
+    private func menuPicker(_ title: String,
+                            selection: Binding<Double>,
+                            options: [(String, Double)]) -> some View {
+        Picker(title, selection: selection) {
+            ForEach(options, id: \.1) { option in
+                Text(option.0).tag(option.1)
+            }
+        }
+        .pickerStyle(.menu)
+    }
+
+    /// Snaps the continuous sensitivity value to the nearest preset for the dropdown.
+    private var sensitivityBinding: Binding<Double> {
+        Binding(
+            get: {
+                let presets = [0.25, 0.5, 0.75]
+                return presets.min(by: { abs($0 - settings.sensitivity) < abs($1 - settings.sensitivity) }) ?? 0.5
+            },
+            set: { settings.sensitivity = $0 }
+        )
     }
 
     // MARK: - Footer
@@ -258,14 +273,6 @@ struct PosturePopoverView: View {
     }
 
     // MARK: - Derived display values
-
-    private var sensitivityLabel: String {
-        switch settings.sensitivity {
-        case ..<0.34: return "Low"
-        case ..<0.67: return "Medium"
-        default:      return "High"
-        }
-    }
 
     private var statusColor: Color {
         guard service.isTracking, service.status == .active else { return .secondary }
