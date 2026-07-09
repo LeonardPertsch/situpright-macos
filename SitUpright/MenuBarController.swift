@@ -19,6 +19,9 @@ final class MenuBarController {
     private var pulseTimer: Timer?
     private var pulsePhase: Double = 0
 
+    // Last color drawn, so we can skip rebuilding identical images on every sample.
+    private var lastImageColor: NSColor?
+
     init(settings: SettingsStore,
          service: HeadphoneMotionService,
          detector: PostureDetector) {
@@ -53,6 +56,8 @@ final class MenuBarController {
         service.$isTracking.sink { [weak self] _ in self?.updateIcon() }.store(in: &cancellables)
         detector.$state.sink { [weak self] _ in self?.updateIcon() }.store(in: &cancellables)
         detector.$isCalibrated.sink { [weak self] _ in self?.updateIcon() }.store(in: &cancellables)
+        // Continuous deviation drives the fluid color blend.
+        detector.$deviationDegrees.sink { [weak self] _ in self?.updateIcon() }.store(in: &cancellables)
 
         updateIcon()
     }
@@ -97,31 +102,80 @@ final class MenuBarController {
         }
     }
 
-    /// Maps the current app state to the menu bar color:
-    /// gray (unavailable), white (good), yellow (borderline), red + pulsing (poor).
+    /// Updates the menu bar icon. Gray when unavailable; otherwise a color blended
+    /// continuously from the smoothed deviation angle (white → yellow → red) so it
+    /// morphs smoothly instead of snapping at thresholds. Red also pulses.
     private func updateIcon() {
         guard let button = statusItem.button else { return }
 
-        var shouldPulse = false
         let trackingLive = service.isTracking && service.status == .active
 
-        if !trackingLive || !detector.isCalibrated {
+        guard trackingLive && detector.isCalibrated else {
             // Gray whenever tracking is off, headphones are gone, or not yet calibrated.
+            lastImageColor = nil
             button.image = symbolImage(color: .systemGray, weight: .regular)
-        } else {
-            switch detector.state {
-            case .good:        button.image = symbolImage(color: nil, weight: .regular)              // subtle adaptive white
-            case .borderline:  button.image = symbolImage(color: Self.vividYellow, weight: .bold)    // bold gold
-            case .poor:        button.image = symbolImage(color: Self.vividRed, weight: .heavy); shouldPulse = true
-            case .unavailable: button.image = symbolImage(color: .systemGray, weight: .regular)
-            }
+            stopPulsing()
+            return
         }
 
-        if shouldPulse {
-            startPulsing()
-        } else {
-            stopPulsing()
+        let color = trackingColor(deviation: detector.deviationDegrees)
+        // Only rebuild the image when the color visibly changed (samples arrive fast).
+        if !colorsClose(lastImageColor, color) {
+            lastImageColor = color
+            button.image = symbolImage(color: color, weight: .bold)
         }
+
+        // Pulse only once fully into the poor zone.
+        if detector.state == .poor { startPulsing() } else { stopPulsing() }
+    }
+
+    /// Blends the icon color from the deviation angle. The yellow band is intentionally
+    /// wide so the icon lingers on yellow well before it turns red.
+    private func trackingColor(deviation d: Double) -> NSColor {
+        let warn = settings.effectiveWarning
+        let bad = settings.effectiveBad
+        let good = resolvedGoodColor()
+
+        let whiteEnd = warn * 0.5                       // pure "good" below this
+        let yellowStart = warn                          // full yellow reached here
+        let yellowHoldEnd = warn + 0.75 * (bad - warn)  // stays yellow until here (long band)
+
+        if d <= whiteEnd {
+            return good
+        } else if d < yellowStart {
+            return blend(good, Self.vividYellow, (d - whiteEnd) / (yellowStart - whiteEnd))
+        } else if d <= yellowHoldEnd {
+            return Self.vividYellow
+        } else if d < bad {
+            return blend(Self.vividYellow, Self.vividRed, (d - yellowHoldEnd) / (bad - yellowHoldEnd))
+        } else {
+            return Self.vividRed
+        }
+    }
+
+    /// "Good" endpoint that stays visible: white on the dark menu bar, dark on a light one.
+    private func resolvedGoodColor() -> NSColor {
+        let appearance = statusItem.button?.effectiveAppearance ?? NSApp.effectiveAppearance
+        let isDark = appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+        return isDark ? .white : NSColor(white: 0.15, alpha: 1)
+    }
+
+    private func blend(_ a: NSColor, _ b: NSColor, _ t: Double) -> NSColor {
+        let ca = a.usingColorSpace(.sRGB) ?? a
+        let cb = b.usingColorSpace(.sRGB) ?? b
+        let tt = CGFloat(max(0, min(1, t)))
+        return NSColor(srgbRed: ca.redComponent + (cb.redComponent - ca.redComponent) * tt,
+                       green: ca.greenComponent + (cb.greenComponent - ca.greenComponent) * tt,
+                       blue: ca.blueComponent + (cb.blueComponent - ca.blueComponent) * tt,
+                       alpha: 1)
+    }
+
+    private func colorsClose(_ a: NSColor?, _ b: NSColor) -> Bool {
+        guard let a = a?.usingColorSpace(.sRGB), let b = b.usingColorSpace(.sRGB) else { return false }
+        let d = abs(a.redComponent - b.redComponent)
+            + abs(a.greenComponent - b.greenComponent)
+            + abs(a.blueComponent - b.blueComponent)
+        return d < 0.015
     }
 
     // MARK: - Pulsing (poor posture)

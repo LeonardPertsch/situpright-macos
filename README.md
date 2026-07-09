@@ -10,7 +10,7 @@ no camera, no cloud, no analytics, no external server.
 
 **macOS 14 Sonoma or newer**
 
-### [⬇︎ Download SitUpright 1.0.1 (.dmg)](https://github.com/LeonardPertsch/situpright-macos/releases/latest/download/SitUpright-1.0.1.dmg)
+### [⬇︎ Download SitUpright 1.0.2 (.dmg)](https://github.com/LeonardPertsch/situpright-macos/releases/latest/download/SitUpright-1.0.2.dmg)
 
 </div>
 
@@ -25,6 +25,12 @@ The icon lives in the menu bar at all times and changes color to reflect your po
 when upright, yellow when you start leaning forward, and red (gently pulsing) when you slouch.
 
 ![Menu bar posture states](docs/menubar-states.png)
+
+The color is blended **continuously** from your smoothed deviation angle, so it morphs smoothly
+instead of snapping between states. The yellow band is intentionally wide, so the icon lingers
+on yellow well before it turns red.
+
+![Deviation to color gradient](docs/color-gradient.png)
 
 ---
 
