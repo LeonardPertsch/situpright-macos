@@ -14,6 +14,7 @@ final class SettingsStore: ObservableObject {
         static let badThreshold       = "badThreshold"
         static let alertDelay         = "alertDelay"
         static let notificationsOn    = "notificationsEnabled"
+        static let soundOn            = "soundEnabled"
         static let launchAtLogin      = "launchAtLogin"
         static let hasCalibration     = "hasCalibration"
         static let baselineW          = "baselineW"
@@ -50,6 +51,11 @@ final class SettingsStore: ObservableObject {
         didSet { defaults.set(notificationsEnabled, forKey: Key.notificationsOn) }
     }
 
+    /// Plays a short ping when poor posture is sustained past the alert delay.
+    @Published var soundEnabled: Bool {
+        didSet { defaults.set(soundEnabled, forKey: Key.soundOn) }
+    }
+
     @Published var launchAtLogin: Bool {
         didSet {
             defaults.set(launchAtLogin, forKey: Key.launchAtLogin)
@@ -69,9 +75,6 @@ final class SettingsStore: ObservableObject {
     /// Exponential-smoothing factor. Small = smoother/slower, large = twitchier.
     let smoothingAlpha: Double = 0.18
 
-    /// Minimum seconds between notifications, independent of sustained posture.
-    let notificationCooldown: TimeInterval = 90
-
     // MARK: - Init
 
     init() {
@@ -80,8 +83,9 @@ final class SettingsStore: ObservableObject {
             Key.sensitivity: 0.5,
             Key.warningThreshold: 10.0,
             Key.badThreshold: 18.0,
-            Key.alertDelay: 8.0,
+            Key.alertDelay: 10.0,
             Key.notificationsOn: true,
+            Key.soundOn: true,
             Key.launchAtLogin: false,
             Key.hasCalibration: false
         ])
@@ -91,6 +95,7 @@ final class SettingsStore: ObservableObject {
         badThreshold         = defaults.double(forKey: Key.badThreshold)
         alertDelay           = defaults.double(forKey: Key.alertDelay)
         notificationsEnabled = defaults.bool(forKey: Key.notificationsOn)
+        soundEnabled         = defaults.bool(forKey: Key.soundOn)
         launchAtLogin        = defaults.bool(forKey: Key.launchAtLogin)
         hasCalibration       = defaults.bool(forKey: Key.hasCalibration)
 

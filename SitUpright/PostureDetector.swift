@@ -15,19 +15,21 @@ final class PostureDetector: ObservableObject {
 
     private let settings: SettingsStore
     private let notifications: NotificationService
+    private let sound: SoundService
 
     // Smoothing / detection state
     private var smoothed: Double = 0
     private var hasSample = false
     private var poorSince: TimeInterval?      // motion-clock time poor posture began
-    private var lastNotified: TimeInterval = -.greatestFiniteMagnitude
+    private var hasAlerted = false            // one alert per continuous slouch episode
 
     // Latest raw sample, kept so calibration can snapshot the current orientation.
     private var latestQuaternion: CMQuaternion?
 
-    init(settings: SettingsStore, notifications: NotificationService) {
+    init(settings: SettingsStore, notifications: NotificationService, sound: SoundService) {
         self.settings = settings
         self.notifications = notifications
+        self.sound = sound
         self.isCalibrated = settings.hasCalibration
     }
 
@@ -38,6 +40,7 @@ final class PostureDetector: ObservableObject {
         smoothed = 0
         hasSample = false
         poorSince = nil
+        hasAlerted = false
     }
 
     // MARK: - Calibration
@@ -54,6 +57,7 @@ final class PostureDetector: ObservableObject {
         smoothed = 0
         hasSample = false
         poorSince = nil
+        hasAlerted = false
         return true
     }
 
@@ -115,20 +119,26 @@ final class PostureDetector: ObservableObject {
         if newState == .poor {
             // Require the poor state to persist for `alertDelay` seconds before alerting.
             if poorSince == nil { poorSince = now }
-            if let since = poorSince, now - since >= settings.alertDelay {
-                maybeNotify(now: now)
+            if let since = poorSince, now - since >= settings.alertDelay, !hasAlerted {
+                // Fire once per slouch episode; re-arms only after posture recovers.
+                hasAlerted = true
+                fireAlert()
             }
         } else {
             poorSince = nil
+            hasAlerted = false      // sat back up → ready to alert again on the next slouch
         }
     }
 
-    private func maybeNotify(now: TimeInterval) {
-        guard settings.notificationsEnabled else { return }
-        // Cooldown prevents notification spam while the user stays slouched.
-        guard now - lastNotified >= settings.notificationCooldown else { return }
-        lastNotified = now
-        notifications.sendPostureAlert(deviationDegrees: deviationDegrees)
+    /// Fires the reminder(s) for a sustained slouch: a notification and/or a short ping,
+    /// each gated by its own preference.
+    private func fireAlert() {
+        if settings.notificationsEnabled {
+            notifications.sendPostureAlert(deviationDegrees: deviationDegrees)
+        }
+        if settings.soundEnabled {
+            sound.playPosturePing()
+        }
     }
 }
 

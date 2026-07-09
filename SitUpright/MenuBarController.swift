@@ -40,7 +40,7 @@ final class MenuBarController {
         }
 
         popover.behavior = .transient
-        popover.contentSize = NSSize(width: 300, height: 460)
+        popover.contentSize = NSSize(width: 300, height: 496)
         popover.contentViewController = NSHostingController(
             rootView: PosturePopoverView(
                 settings: settings,

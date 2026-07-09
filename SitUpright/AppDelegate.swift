@@ -6,8 +6,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private let settings = SettingsStore()
     private lazy var notifications = NotificationService()
+    private let sound = SoundService()
     private let service = HeadphoneMotionService()
-    private lazy var detector = PostureDetector(settings: settings, notifications: notifications)
+    private lazy var detector = PostureDetector(settings: settings, notifications: notifications, sound: sound)
     private var menuBar: MenuBarController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {

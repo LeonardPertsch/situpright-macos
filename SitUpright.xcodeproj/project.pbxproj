@@ -16,6 +16,7 @@
 		FE00000000000000000000B7 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE00000000000000000000A7 /* NotificationService.swift */; };
 		FE00000000000000000000B8 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE00000000000000000000A8 /* SettingsStore.swift */; };
 		FE00000000000000000000B9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FE00000000000000000000C4 /* Assets.xcassets */; };
+		FE00000000000000000000BA /* SoundService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE00000000000000000000AA /* SoundService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		FE00000000000000000000A6 /* PostureDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostureDetector.swift; sourceTree = "<group>"; };
 		FE00000000000000000000A7 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		FE00000000000000000000A8 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
+		FE00000000000000000000AA /* SoundService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundService.swift; sourceTree = "<group>"; };
 		FE00000000000000000000C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FE00000000000000000000C2 /* SitUpright.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SitUpright.entitlements; sourceTree = "<group>"; };
 		FE00000000000000000000C3 /* SitUpright.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SitUpright.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -63,6 +65,7 @@
 				FE00000000000000000000A6 /* PostureDetector.swift */,
 				FE00000000000000000000A7 /* NotificationService.swift */,
 				FE00000000000000000000A8 /* SettingsStore.swift */,
+				FE00000000000000000000AA /* SoundService.swift */,
 				FE00000000000000000000C4 /* Assets.xcassets */,
 				FE00000000000000000000C1 /* Info.plist */,
 				FE00000000000000000000C2 /* SitUpright.entitlements */,
@@ -155,6 +158,7 @@
 				FE00000000000000000000B6 /* PostureDetector.swift in Sources */,
 				FE00000000000000000000B7 /* NotificationService.swift in Sources */,
 				FE00000000000000000000B8 /* SettingsStore.swift in Sources */,
+				FE00000000000000000000BA /* SoundService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

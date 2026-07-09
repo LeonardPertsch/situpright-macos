@@ -122,6 +122,9 @@ struct PosturePopoverView: View {
             Toggle("Notifications", isOn: $settings.notificationsEnabled)
                 .font(.subheadline)
 
+            Toggle("Sound", isOn: $settings.soundEnabled)
+                .font(.subheadline)
+
             Toggle("Launch at login", isOn: $settings.launchAtLogin)
                 .font(.subheadline)
         }
