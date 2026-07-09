@@ -10,7 +10,7 @@ no camera, no cloud, no analytics, no external server.
 
 **macOS 14 Sonoma or newer**
 
-### [⬇︎ Download SitUpright 1.0.3 (.dmg)](https://github.com/LeonardPertsch/situpright-macos/releases/latest/download/SitUpright-1.0.3.dmg)
+### [⬇︎ Download SitUpright 1.0.4 (.dmg)](https://github.com/LeonardPertsch/situpright-macos/releases/latest/download/SitUpright-1.0.4.dmg)
 
 </div>
 
@@ -59,9 +59,10 @@ If you prefer to regenerate the project from scratch, see `project.yml` (XcodeGe
    - **yellow** — borderline (past the warning angle)
    - **red, pulsing** — slouching (past the bad-posture angle)
 5. If poor posture persists past the alert delay (default 10s), you get a local notification
-   and a short ping. Both are optional (toggles in the popover). The ping uses a system sound
-   that **mixes** with other audio — it never interrupts, pauses, or ducks music. It fires once
-   per slouch and re-arms after you sit back up.
+   and a short ping. Both are optional (toggles in the popover). Pick the tone from several
+   system sounds, and set how often the ping **repeats** while you stay in the red zone. The
+   ping uses a system sound that **mixes** with other audio — it never interrupts, pauses, or
+   ducks music. The notification fires once per slouch and re-arms after you sit back up.
 
 ---
 
