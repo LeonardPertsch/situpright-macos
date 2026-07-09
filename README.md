@@ -10,7 +10,7 @@ no camera, no cloud, no analytics, no external server.
 
 **macOS 14 Sonoma or newer**
 
-### [⬇︎ Download SitUpright 1.0.4 (.dmg)](https://github.com/LeonardPertsch/situpright-macos/releases/latest/download/SitUpright-1.0.4.dmg)
+### [⬇︎ Download SitUpright 1.0.5 (.dmg)](https://github.com/LeonardPertsch/situpright-macos/releases/latest/download/SitUpright-1.0.5.dmg)
 
 </div>
 
@@ -31,6 +31,15 @@ instead of snapping between states. The yellow band is intentionally wide, so th
 on yellow well before it turns red.
 
 ![Deviation to color gradient](docs/color-gradient.png)
+
+## Statistics
+
+The popover shows an all-time posture ring: the arcs are how long you spent in each band
+(good / borderline / poor), the center is your share of time at the optimum, and the caption
+shows total tracked time and your average deviation from the calibrated optimum. Totals persist
+across launches; **Reset** clears them.
+
+![Statistics ring](docs/stats-ring.png)
 
 ---
 

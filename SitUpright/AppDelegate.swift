@@ -7,6 +7,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let settings = SettingsStore()
     private lazy var notifications = NotificationService()
     private let sound = SoundService()
+    private let stats = StatsStore()
     private let service = HeadphoneMotionService()
     private lazy var detector = PostureDetector(settings: settings, notifications: notifications, sound: sound)
     private var menuBar: MenuBarController?
@@ -20,13 +21,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Route raw motion (from CoreMotion) into the posture math. This is the only
         // seam between data acquisition and detection.
         service.onMotion = { [weak self] quaternion, timestamp in
-            self?.detector.process(quaternion: quaternion, timestamp: timestamp)
+            guard let self else { return }
+            self.detector.process(quaternion: quaternion, timestamp: timestamp)
+            // Feed the freshly computed posture into the all-time statistics.
+            self.stats.record(state: self.detector.state,
+                              deviation: self.detector.deviationDegrees,
+                              timestamp: timestamp,
+                              calibrated: self.detector.isCalibrated)
         }
 
-        menuBar = MenuBarController(settings: settings, service: service, detector: detector, sound: sound)
+        menuBar = MenuBarController(settings: settings, service: service,
+                                    detector: detector, sound: sound, stats: stats)
     }
 
     func applicationWillTerminate(_ notification: Notification) {
         service.stop()
+        stats.flush()
     }
 }

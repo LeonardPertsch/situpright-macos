@@ -25,7 +25,8 @@ final class MenuBarController {
     init(settings: SettingsStore,
          service: HeadphoneMotionService,
          detector: PostureDetector,
-         sound: SoundService) {
+         sound: SoundService,
+         stats: StatsStore) {
         self.settings = settings
         self.service = service
         self.detector = detector
@@ -41,13 +42,14 @@ final class MenuBarController {
         }
 
         popover.behavior = .transient
-        popover.contentSize = NSSize(width: 300, height: 566)
+        popover.contentSize = NSSize(width: 300, height: 600)
         popover.contentViewController = NSHostingController(
             rootView: PosturePopoverView(
                 settings: settings,
                 service: service,
                 detector: detector,
-                sound: sound
+                sound: sound,
+                stats: stats
             )
         )
 
