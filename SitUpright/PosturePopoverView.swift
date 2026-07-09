@@ -9,6 +9,7 @@ struct PosturePopoverView: View {
     @ObservedObject var settings: SettingsStore
     @ObservedObject var service: HeadphoneMotionService
     @ObservedObject var detector: PostureDetector
+    let sound: SoundService
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -124,6 +125,28 @@ struct PosturePopoverView: View {
 
             Toggle("Sound", isOn: $settings.soundEnabled)
                 .font(.subheadline)
+
+            // Sound chooser — previews the sound when you switch.
+            Picker("Tone", selection: $settings.soundName) {
+                ForEach(SoundService.available, id: \.self) { Text($0).tag($0) }
+            }
+            .pickerStyle(.menu)
+            .font(.subheadline)
+            .disabled(!settings.soundEnabled)
+            .onChange(of: settings.soundName) { _, newValue in
+                sound.play(named: newValue)
+            }
+
+            // How often the ping repeats while you stay in the red zone.
+            HStack {
+                Text("Repeat every")
+                Spacer()
+                Text("\(Int(settings.soundRepeatInterval)) s").foregroundStyle(.secondary)
+                Stepper("", value: $settings.soundRepeatInterval, in: 5...120, step: 5)
+                    .labelsHidden()
+            }
+            .font(.subheadline)
+            .disabled(!settings.soundEnabled)
 
             Toggle("Launch at login", isOn: $settings.launchAtLogin)
                 .font(.subheadline)

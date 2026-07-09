@@ -15,6 +15,8 @@ final class SettingsStore: ObservableObject {
         static let alertDelay         = "alertDelay"
         static let notificationsOn    = "notificationsEnabled"
         static let soundOn            = "soundEnabled"
+        static let soundName          = "soundName"
+        static let soundRepeat        = "soundRepeatInterval"
         static let launchAtLogin      = "launchAtLogin"
         static let hasCalibration     = "hasCalibration"
         static let baselineW          = "baselineW"
@@ -56,6 +58,16 @@ final class SettingsStore: ObservableObject {
         didSet { defaults.set(soundEnabled, forKey: Key.soundOn) }
     }
 
+    /// Which built-in system sound to play (see `SoundService.available`).
+    @Published var soundName: String {
+        didSet { defaults.set(soundName, forKey: Key.soundName) }
+    }
+
+    /// Seconds between repeated pings while you stay in the poor zone.
+    @Published var soundRepeatInterval: Double {
+        didSet { defaults.set(soundRepeatInterval, forKey: Key.soundRepeat) }
+    }
+
     @Published var launchAtLogin: Bool {
         didSet {
             defaults.set(launchAtLogin, forKey: Key.launchAtLogin)
@@ -86,6 +98,8 @@ final class SettingsStore: ObservableObject {
             Key.alertDelay: 10.0,
             Key.notificationsOn: true,
             Key.soundOn: true,
+            Key.soundName: "Tink",
+            Key.soundRepeat: 15.0,
             Key.launchAtLogin: false,
             Key.hasCalibration: false
         ])
@@ -96,6 +110,8 @@ final class SettingsStore: ObservableObject {
         alertDelay           = defaults.double(forKey: Key.alertDelay)
         notificationsEnabled = defaults.bool(forKey: Key.notificationsOn)
         soundEnabled         = defaults.bool(forKey: Key.soundOn)
+        soundName            = defaults.string(forKey: Key.soundName) ?? "Tink"
+        soundRepeatInterval  = defaults.double(forKey: Key.soundRepeat)
         launchAtLogin        = defaults.bool(forKey: Key.launchAtLogin)
         hasCalibration       = defaults.bool(forKey: Key.hasCalibration)
 

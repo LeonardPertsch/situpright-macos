@@ -21,7 +21,8 @@ final class PostureDetector: ObservableObject {
     private var smoothed: Double = 0
     private var hasSample = false
     private var poorSince: TimeInterval?      // motion-clock time poor posture began
-    private var hasAlerted = false            // one alert per continuous slouch episode
+    private var hasAlerted = false            // notification: once per continuous slouch episode
+    private var lastSoundTime: TimeInterval = -.greatestFiniteMagnitude  // for repeating pings
 
     // Latest raw sample, kept so calibration can snapshot the current orientation.
     private var latestQuaternion: CMQuaternion?
@@ -41,6 +42,7 @@ final class PostureDetector: ObservableObject {
         hasSample = false
         poorSince = nil
         hasAlerted = false
+        lastSoundTime = -.greatestFiniteMagnitude
     }
 
     // MARK: - Calibration
@@ -58,6 +60,7 @@ final class PostureDetector: ObservableObject {
         hasSample = false
         poorSince = nil
         hasAlerted = false
+        lastSoundTime = -.greatestFiniteMagnitude
         return true
     }
 
@@ -119,26 +122,31 @@ final class PostureDetector: ObservableObject {
         if newState == .poor {
             // Require the poor state to persist for `alertDelay` seconds before alerting.
             if poorSince == nil { poorSince = now }
-            if let since = poorSince, now - since >= settings.alertDelay, !hasAlerted {
-                // Fire once per slouch episode; re-arms only after posture recovers.
+            guard let since = poorSince, now - since >= settings.alertDelay else { return }
+
+            if !hasAlerted {
+                // First crossing of the sustained-slouch threshold this episode.
                 hasAlerted = true
-                fireAlert()
+                if settings.notificationsEnabled {
+                    notifications.sendPostureAlert(deviationDegrees: deviationDegrees)
+                }
+                playPingIfEnabled(now: now)
+            } else if settings.soundEnabled,
+                      now - lastSoundTime >= settings.soundRepeatInterval {
+                // Still slouching → repeat the ping every `soundRepeatInterval` seconds.
+                playPingIfEnabled(now: now)
             }
         } else {
+            // Sat back up → reset so the next slouch alerts (and pings) again.
             poorSince = nil
-            hasAlerted = false      // sat back up → ready to alert again on the next slouch
+            hasAlerted = false
         }
     }
 
-    /// Fires the reminder(s) for a sustained slouch: a notification and/or a short ping,
-    /// each gated by its own preference.
-    private func fireAlert() {
-        if settings.notificationsEnabled {
-            notifications.sendPostureAlert(deviationDegrees: deviationDegrees)
-        }
-        if settings.soundEnabled {
-            sound.playPosturePing()
-        }
+    private func playPingIfEnabled(now: TimeInterval) {
+        guard settings.soundEnabled else { return }
+        sound.play(named: settings.soundName)
+        lastSoundTime = now
     }
 }
 

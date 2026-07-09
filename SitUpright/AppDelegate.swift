@@ -23,7 +23,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self?.detector.process(quaternion: quaternion, timestamp: timestamp)
         }
 
-        menuBar = MenuBarController(settings: settings, service: service, detector: detector)
+        menuBar = MenuBarController(settings: settings, service: service, detector: detector, sound: sound)
     }
 
     func applicationWillTerminate(_ notification: Notification) {
