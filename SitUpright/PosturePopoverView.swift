@@ -347,13 +347,18 @@ private struct StatsRing: View {
         let g = snapshot.goodSeconds / total
         let b = snapshot.borderlineSeconds / total
         let blend = 0.03
+        // Seam color = midpoint of red and green, placed at the 0/1 wrap point so the
+        // top of the ring blends red→green instead of showing a hard edge.
+        let seam = Color(red: 0.65, green: 0.465, blue: 0.275)
         let raw: [(Color, Double)] = [
-            (green,  0),
+            (seam,   0),
+            (green,  blend),
             (green,  g - blend),
             (yellow, g + blend),
             (yellow, g + b - blend),
             (red,    g + b + blend),
-            (red,    1),
+            (red,    1 - blend),
+            (seam,   1),
         ]
         var last = 0.0
         return raw.map { (color, loc) in
