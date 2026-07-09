@@ -287,41 +287,79 @@ struct PosturePopoverView: View {
     }
 }
 
-/// Donut chart of time spent in each posture band. The arc lengths show *how long*
-/// (good/borderline/poor), and the center shows the share of time at the optimum.
+/// Donut chart of time spent in each posture band. The arc proportions show *how long*
+/// (good/borderline/poor) via a soft green→yellow→red gradient, and the center shows the
+/// share of time at the optimum. It draws on smoothly whenever the popover appears.
 private struct StatsRing: View {
+
     let snapshot: StatsSnapshot
 
-    private let lineWidth: CGFloat = 14
+    private let lineWidth: CGFloat = 15
+
+    // Segment colors (match the menu bar palette; green reads as "optimal" in a chart).
+    private let green  = Color(red: 0.30, green: 0.80, blue: 0.42)
+    private let yellow = Color(red: 1.00, green: 0.80, blue: 0.00)
+    private let red    = Color(red: 1.00, green: 0.13, blue: 0.13)
+
+    @State private var progress: CGFloat = 0   // drives the draw-on animation
 
     var body: some View {
         let total = snapshot.totalSeconds
-        let g = total > 0 ? snapshot.goodSeconds / total : 0
-        let b = total > 0 ? snapshot.borderlineSeconds / total : 0
-        let p = total > 0 ? snapshot.poorSeconds / total : 0
+        let goodShare = total > 0 ? snapshot.goodSeconds / total : 0
 
         ZStack {
             Circle()
                 .stroke(Color.secondary.opacity(0.15), lineWidth: lineWidth)
 
-            arc(from: 0,       to: g,       color: .green)
-            arc(from: g,       to: g + b,   color: .yellow)
-            arc(from: g + b,   to: g + b + p, color: .red)
+            // Single ring stroked with an angular gradient → colors blend softly at the
+            // segment boundaries instead of switching hard.
+            Circle()
+                .trim(from: 0, to: progress)
+                .stroke(
+                    AngularGradient(gradient: Gradient(stops: gradientStops()), center: .center),
+                    style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
+                )
+                .rotationEffect(.degrees(-90))   // start at 12 o'clock
+                .animation(.easeInOut(duration: 0.55), value: snapshot)
 
             VStack(spacing: 1) {
-                Text(total > 0 ? "\(Int((g * 100).rounded()))%" : "—")
+                Text(total > 0 ? "\(Int((goodShare * 100).rounded()))%" : "—")
                     .font(.title3.bold().monospacedDigit())
+                    .contentTransition(.numericText())
+                    .animation(.easeInOut(duration: 0.5), value: goodShare)
                 Text("optimal")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
         }
+        .onAppear { withAnimation(.easeOut(duration: 0.8)) { progress = 1 } }
+        .onDisappear { progress = 0 }   // re-draw next time the popover opens
     }
 
-    private func arc(from: Double, to: Double, color: Color) -> some View {
-        Circle()
-            .trim(from: CGFloat(min(from, to)), to: CGFloat(max(from, to)))
-            .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt))
-            .rotationEffect(.degrees(-90))   // start at 12 o'clock
+    /// Builds gradient stops with a small blend band around each boundary. Locations are
+    /// clamped to be monotonic so tiny/empty segments never break the gradient.
+    private func gradientStops() -> [Gradient.Stop] {
+        let total = snapshot.totalSeconds
+        guard total > 0 else {
+            return [Gradient.Stop(color: .clear, location: 0),
+                    Gradient.Stop(color: .clear, location: 1)]
+        }
+        let g = snapshot.goodSeconds / total
+        let b = snapshot.borderlineSeconds / total
+        let blend = 0.03
+        let raw: [(Color, Double)] = [
+            (green,  0),
+            (green,  g - blend),
+            (yellow, g + blend),
+            (yellow, g + b - blend),
+            (red,    g + b + blend),
+            (red,    1),
+        ]
+        var last = 0.0
+        return raw.map { (color, loc) in
+            let clamped = max(last, min(1, loc))
+            last = clamped
+            return Gradient.Stop(color: color, location: clamped)
+        }
     }
 }
