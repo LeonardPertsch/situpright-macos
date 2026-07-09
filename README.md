@@ -10,7 +10,7 @@ no camera, no cloud, no analytics, no external server.
 
 **macOS 14 Sonoma or newer**
 
-### [⬇︎ Download SitUpright 1.0.0 (.dmg)](https://github.com/LeonardPertsch/situpright-macos/releases/latest/download/SitUpright-1.0.0.dmg)
+### [⬇︎ Download SitUpright 1.0.1 (.dmg)](https://github.com/LeonardPertsch/situpright-macos/releases/latest/download/SitUpright-1.0.1.dmg)
 
 </div>
 
