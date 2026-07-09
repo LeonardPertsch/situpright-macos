@@ -1,0 +1,278 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FE00000000000000000000B1 /* PostureApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE00000000000000000000A1 /* PostureApp.swift */; };
+		FE00000000000000000000B2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE00000000000000000000A2 /* AppDelegate.swift */; };
+		FE00000000000000000000B3 /* MenuBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE00000000000000000000A3 /* MenuBarController.swift */; };
+		FE00000000000000000000B4 /* PosturePopoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE00000000000000000000A4 /* PosturePopoverView.swift */; };
+		FE00000000000000000000B5 /* HeadphoneMotionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE00000000000000000000A5 /* HeadphoneMotionService.swift */; };
+		FE00000000000000000000B6 /* PostureDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE00000000000000000000A6 /* PostureDetector.swift */; };
+		FE00000000000000000000B7 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE00000000000000000000A7 /* NotificationService.swift */; };
+		FE00000000000000000000B8 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE00000000000000000000A8 /* SettingsStore.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		FE00000000000000000000A1 /* PostureApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostureApp.swift; sourceTree = "<group>"; };
+		FE00000000000000000000A2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		FE00000000000000000000A3 /* MenuBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarController.swift; sourceTree = "<group>"; };
+		FE00000000000000000000A4 /* PosturePopoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosturePopoverView.swift; sourceTree = "<group>"; };
+		FE00000000000000000000A5 /* HeadphoneMotionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadphoneMotionService.swift; sourceTree = "<group>"; };
+		FE00000000000000000000A6 /* PostureDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostureDetector.swift; sourceTree = "<group>"; };
+		FE00000000000000000000A7 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		FE00000000000000000000A8 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
+		FE00000000000000000000C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FE00000000000000000000C2 /* SitUpright.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SitUpright.entitlements; sourceTree = "<group>"; };
+		FE00000000000000000000C3 /* SitUpright.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SitUpright.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FE00000000000000000000F4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FE00000000000000000000D1 = {
+			isa = PBXGroup;
+			children = (
+				FE00000000000000000000D2 /* SitUpright */,
+				FE00000000000000000000D3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FE00000000000000000000D2 /* SitUpright */ = {
+			isa = PBXGroup;
+			children = (
+				FE00000000000000000000A1 /* PostureApp.swift */,
+				FE00000000000000000000A2 /* AppDelegate.swift */,
+				FE00000000000000000000A3 /* MenuBarController.swift */,
+				FE00000000000000000000A4 /* PosturePopoverView.swift */,
+				FE00000000000000000000A5 /* HeadphoneMotionService.swift */,
+				FE00000000000000000000A6 /* PostureDetector.swift */,
+				FE00000000000000000000A7 /* NotificationService.swift */,
+				FE00000000000000000000A8 /* SettingsStore.swift */,
+				FE00000000000000000000C1 /* Info.plist */,
+				FE00000000000000000000C2 /* SitUpright.entitlements */,
+			);
+			path = SitUpright;
+			sourceTree = "<group>";
+		};
+		FE00000000000000000000D3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FE00000000000000000000C3 /* SitUpright.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FE00000000000000000000F1 /* SitUpright */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FE00000000000000000000E2 /* Build configuration list for PBXNativeTarget "SitUpright" */;
+			buildPhases = (
+				FE00000000000000000000F3 /* Sources */,
+				FE00000000000000000000F4 /* Frameworks */,
+				FE00000000000000000000F5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SitUpright;
+			productName = SitUpright;
+			productReference = FE00000000000000000000C3 /* SitUpright.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FE00000000000000000000F2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					FE00000000000000000000F1 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = FE00000000000000000000E1 /* Build configuration list for PBXProject "SitUpright" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = FE00000000000000000000D1;
+			productRefGroup = FE00000000000000000000D3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FE00000000000000000000F1 /* SitUpright */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FE00000000000000000000F5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FE00000000000000000000F3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FE00000000000000000000B1 /* PostureApp.swift in Sources */,
+				FE00000000000000000000B2 /* AppDelegate.swift in Sources */,
+				FE00000000000000000000B3 /* MenuBarController.swift in Sources */,
+				FE00000000000000000000B4 /* PosturePopoverView.swift in Sources */,
+				FE00000000000000000000B5 /* HeadphoneMotionService.swift in Sources */,
+				FE00000000000000000000B6 /* PostureDetector.swift in Sources */,
+				FE00000000000000000000B7 /* NotificationService.swift in Sources */,
+				FE00000000000000000000B8 /* SettingsStore.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		FE00000000000000000000E3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		FE00000000000000000000E4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		FE00000000000000000000E5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = SitUpright/SitUpright.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SitUpright/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.SitUpright;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		FE00000000000000000000E6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = SitUpright/SitUpright.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SitUpright/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.SitUpright;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FE00000000000000000000E1 /* Build configuration list for PBXProject "SitUpright" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FE00000000000000000000E3 /* Debug */,
+				FE00000000000000000000E4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FE00000000000000000000E2 /* Build configuration list for PBXNativeTarget "SitUpright" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FE00000000000000000000E5 /* Debug */,
+				FE00000000000000000000E6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FE00000000000000000000F2 /* Project object */;
+}

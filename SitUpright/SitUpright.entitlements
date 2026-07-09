@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+        App Sandbox is intentionally DISABLED.
+
+        CoreMotion's CMHeadphoneMotionManager has no dedicated App Sandbox
+        entitlement key. Running non-sandboxed is the reliable configuration for a
+        locally distributed menu bar utility that reads headphone motion. If you
+        later want to sandbox this for Mac App Store distribution, add
+        <key>com.apple.security.app-sandbox</key><true/> and validate that motion
+        updates still arrive on your target OS — behavior there is not guaranteed.
+    -->
+</dict>
+</plist>
