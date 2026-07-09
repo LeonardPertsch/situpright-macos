@@ -16,3 +16,4 @@ SitUpright.xcodeproj/xcuserdata/
 .build/
 .swiftpm/
 Package.resolved
+*.dmg
